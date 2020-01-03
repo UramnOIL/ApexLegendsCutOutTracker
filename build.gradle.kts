@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
+version = "1.1"
 
 repositories {
     mavenCentral()
@@ -26,5 +26,5 @@ tasks.jar {
     manifest {
         attributes["Main-Class"] = "com.uramnoil.apexlegendscutouttracker.MainKt"
     }
-    from(configurations.compile.get().map { if (it.isDirectory) it else zipTree(it) })
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }

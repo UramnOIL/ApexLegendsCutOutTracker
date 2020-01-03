@@ -4,23 +4,30 @@ import java.io.File
 import javax.imageio.ImageIO
 
 fun main() {
-    val imagesDirectory = File("images/")
+    val imagesDirectory = File(System.getProperty("user.dir") + "/images")
     if(!imagesDirectory.exists() or !imagesDirectory.isDirectory) {
         imagesDirectory.mkdir()
     }
 
-    val resultsDirectory = File("results/")
+    val resultsDirectory = File(System.getProperty("user.dir") + "/results")
     if(!resultsDirectory.exists() or !resultsDirectory.isDirectory) {
         resultsDirectory.mkdir()
     }
+
     imagesDirectory.listFiles()?.forEach {
-        val img = ImageIO.read(it)
-        val subImage = img.getSubimage(1197, 274, 508, 687)
-        var output = File(resultsDirectory.path + "/" + it.name)
-        val n = 1;
-        while (output.exists()) {
-            output = File(output.path + "(" + n.toString() + ")")
+        try {
+            val img = ImageIO.read(it)
+            val subImage = img.getSubimage(1197, 274, 508, 687)
+            val original = File(resultsDirectory, it.name)
+            var output = original
+            val basename = original.name
+            var n = 1
+            while (output.exists()) {
+                output = File(original.parent + "/" + basename.substring(0, basename.lastIndexOf(".")) + "(" + n++.toString() + ")" + ".png")
+            }
+            ImageIO.write(subImage, "png", output)
+        } catch (e: Exception) {
+            println(e.message)
         }
-        ImageIO.write(subImage, "png", output)
     }
 }
